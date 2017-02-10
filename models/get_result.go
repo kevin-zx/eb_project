@@ -17,7 +17,7 @@ func GetResult(token string, ids string)string{
 }
 //获取查排名的结果
 func get_query_data(token string, ids string) string {
-	sql := "select * from tmall_view where `batch` = ?"
+	sql := "select keyword,p_id,title,shop,rank from tmall_view where `batch` = ?"
 	id_array := regexpUtil.SplitString2Line(ids)
 	add := 1
 	if len(id_array)<=1 && id_array[0]==""{
@@ -35,9 +35,10 @@ func get_query_data(token string, ids string) string {
 		}
 		sql += strings.Join(question_mark_array, ",")+")"
 	}
-
+	//println(token+"1234")
 
 	data,_ :=  mysqlutil.SelectAll(sql,param...)
+	println(data)
 	json_data,_:=json.Marshal(data)
 	return string(json_data)
 }

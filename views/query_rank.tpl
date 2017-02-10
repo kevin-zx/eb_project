@@ -24,6 +24,11 @@
       height: 400px;
       box-sizing: border-box;
     }
+      #result_area{
+          width: 645px;
+          height: 300px;
+          box-sizing: border-box;
+      }
   </style>
   <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
 </head>
@@ -47,7 +52,7 @@
     <br/>
     <br/>
     <button id="submit">提交</button>
-      <textarea id="result_area"></textarea>
+      <textarea id="result_area" placeholder="结果"></textarea>
   </div>
 </body>
 <script>
@@ -72,26 +77,27 @@
           return
       }
 
-      var platform = platform_select.value
-      switch (platform){
-          case "tmall":
-            query_tmall_rank()
-            break;
-      }
+//      var platform = platform_select.value
+//      switch (platform){
+//          case "tmall":
+//            query_tmall_rank()
+//            break;
+//      }
 
-//      $.ajax({
-//              url: "/query/",
-//              type:'POST',
-//              data:{queryinfo:query_keywords, platform:platform_select.value},
-//              success: function(data,textStatus,jqXHR){
-//                  console.log(data)
-//              },
-//              error:function (xhr,textStatus) {
-//                  console.log(xhr)
-//                  console.log(textStatus)
-//              }
-//          }
-//      )
+      $.ajax({
+              url: "/query/",
+              type:'POST',
+              data:{queryinfo:query_keywords, platform:platform_select.value},
+              success: function(data,textStatus,jqXHR){
+                  console.log(data)
+                  token = data
+              },
+              error:function (xhr,textStatus) {
+                  console.log(xhr)
+                  console.log(textStatus)
+              }
+          }
+      )
     }
 
     function query_tmall_rank() {
@@ -123,45 +129,52 @@
     
     
     
-    function tmall_match(htmlElement, keyword, current_page) {
-        var match_flag = false
-        ids = id_box.value.split(/\r\n|\r|\n/g)
-        if(ids.length>=1&& ids[0]!=""){
-            for (var index = 0;index<ids.length; index++ ){
-                var data = htmlElement.find("div[data-id='"+ids[index]+"']")
-                if(data.length>0){
-                    var data = extract_tmall_item(data[0])
-                    if(data)
-                        result_area.value += keyword+","+data.id+","+data.title+","+data.shop_name+","+(parseInt(data["rank"])+current_page*60)+"\r\n"
-                    match_flag = true
-                }
-            }
-        }else{
-            var item_list = htmlElement.find("#J_ItemList > div")
-            for(var i=0; i<item_list.length; i++){
-                var il = item_list[i]
-                var data = extract_tmall_item(il)
-                if(data)
-                    result_area.value += keyword+","+data.id+","+data.title+","+data.shop_name+","+(parseInt(data["rank"])+current_page*60)+"\r\n"
-
-            }
-            match_flag = true
-        }
-        return match_flag
-    }
-    
-    function extract_tmall_item(tmall_item) {
-        var data = {}
-        if(!tmall_item.querySelector(".productTitle>a")){
-            return null
-        }
-        data["id"] = tmall_item.getAttribute("data-id")
-        data["title"] = tmall_item.querySelector(".productTitle>a").getAttribute("title")
-        data["shop_name"] = tmall_item.querySelector(".productShop >a").text.trim()
-        data["rank"] = tmall_item.querySelector(".productTitle>a").getAttribute("data-p").split("-")[0]
-        return data
-    }
-    
+//    function tmall_match(htmlElement, keyword, current_page) {
+//        var match_flag = false
+//        ids = id_box.value.split(/\r\n|\r|\n/g)
+//        if(ids.length>=1&& ids[0]!=""){
+//            for (var index = 0;index<ids.length; index++ ){
+//                var data = htmlElement.find("div[data-id='"+ids[index]+"']")
+//                if(data.length>0){
+//                    var data = extract_tmall_item(data[0])
+//                    if(data)
+//                        result_area.value += keyword+","+data.id+","+data.title+","+data.shop_name+","+(parseInt(data["rank"])+current_page*60)+"\r\n"
+//                    match_flag = true
+//                }
+//            }
+//        }else{
+//            var item_list = htmlElement.find("#J_ItemList > div")
+//            for(var i=0; i<item_list.length; i++){
+//                var il = item_list[i]
+//                var data = extract_tmall_item(il)
+//                if(data)
+//                    result_area.value += keyword+","+data.id+","+data.title+","+data.shop_name+","+(parseInt(data["rank"])+current_page*60)+"\r\n"
+//
+//            }
+//            match_flag = true
+//        }
+//        return match_flag
+//    }
+//
+//    function extract_tmall_item(tmall_item) {
+//        var data = {}
+//        if(!tmall_item.querySelector(".productTitle>a")){
+//            return null
+//        }
+//        data["id"] = tmall_item.getAttribute("data-id")
+//        data["title"] = tmall_item.querySelector(".productTitle>a").getAttribute("title")
+//        data["shop_name"] = tmall_item.querySelector(".productShop >a").text.trim()
+//        data["rank"] = tmall_item.querySelector(".productTitle>a").getAttribute("data-p").split("-")[0]
+//        return data
+//    }
+//    function htmlencode(html) {
+//        return $(html)
+//    }
+//
+//    function combine_tmall_pc_url(page,keyword) {
+//        var url = "https://list.tmall.com/search_product.htm?s="+(page*60)+"&q="+keyword+"&sort=s&style=g&smAreaId=320500&type=pc#J_Filter"
+//        return url
+//    }
     //服务器端转发
     function transmitRequest(url) {
         var html = ""
@@ -181,15 +194,8 @@
         return html
     }
     
-    function htmlencode(html) {
-        return $(html)
-    }
 
-    function combine_tmall_pc_url(page,keyword) {
-        var url = "https://list.tmall.com/search_product.htm?s="+(page*60)+"&q="+keyword+"&sort=s&style=g&smAreaId=320500&type=pc#J_Filter"
-        return url
-    }
-
+    var rdata = null
     //获取result
     function getResult() {
         $.ajax({
@@ -197,8 +203,10 @@
             type: 'POST',
             data:{token:token, ids:query_product_ids},
             async:false,
+            dataType: "json",
             success: function (data,textStatus,jqXHR) {
                 console.log(data)
+                rdata = data
             },
             error:function (xhr,textStatus) {
                 console.log(xhr)
@@ -206,6 +214,11 @@
             }
 
         })
+    }
+    function extract_data(data) {
+        for(var i=0;i<data.length;i++){
+            result_area.value += data[i].keyword+","+data[i].p_id+","+data[i].title+","+data[i].shop+","+data[i].rank+"\r\n"
+        }
     }
     
 </script>
