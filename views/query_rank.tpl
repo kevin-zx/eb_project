@@ -47,9 +47,7 @@
     <br/>
     <br/>
     <button id="submit">提交</button>
-      <textarea id="result_area">
-
-      </textarea>
+      <textarea id="result_area"></textarea>
   </div>
 </body>
 <script>
