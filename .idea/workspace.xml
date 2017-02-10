@@ -112,8 +112,8 @@
           <file leaf-file-name="query_rank.tpl" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/views/query_rank.tpl">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="-2444">
-                  <caret line="46" column="38" lean-forward="true" selection-start-line="46" selection-start-column="38" selection-end-line="46" selection-end-column="38" />
+                <state relative-caret-position="349">
+                  <caret line="193" column="14" lean-forward="false" selection-start-line="193" selection-start-column="14" selection-end-line="193" selection-end-column="14" />
                   <folding />
                 </state>
               </provider>
@@ -654,8 +654,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/views/query_rank.tpl">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2444">
-          <caret line="46" column="38" lean-forward="true" selection-start-line="46" selection-start-column="38" selection-end-line="46" selection-end-column="38" />
+        <state relative-caret-position="349">
+          <caret line="193" column="14" lean-forward="false" selection-start-line="193" selection-start-column="14" selection-end-line="193" selection-end-column="14" />
           <folding />
         </state>
       </provider>
