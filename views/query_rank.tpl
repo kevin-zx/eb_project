@@ -84,48 +84,8 @@
 //            break;
 //      }
 
-      $.ajax({
-              url: "/query/",
-              type:'POST',
-              data:{queryinfo:query_keywords, platform:platform_select.value},
-              success: function(data,textStatus,jqXHR){
-                  console.log(data)
-                  token = data
-              },
-              error:function (xhr,textStatus) {
-                  console.log(xhr)
-                  console.log(textStatus)
-              }
-          }
-      )
     }
 
-    function query_tmall_rank() {
-        var query_array = query_box.value.split(/\r\n|\r|\n/g)
-        var max_page = max_page_input.value == 0 ? 3 : max_page_input.value
-        max_page = max_page>10 ? 10 : max_page
-        for (var i=0; i< query_array.length; i++){
-            for (var page = 0; page< max_page; page++){
-                var url = combine_tmall_pc_url(page, encodeURI(query_array[i]))
-                var html = transmitRequest(url)
-                var htmlElement = $(html)
-                var c_page = htmlElement.find("b.ui-page-s-len")
-                if(c_page.length == 0){
-                    tmall_match(htmlElement, keyword, page)
-                }else{
-                    var current = c_page.text().split("/")[0]
-                    var total_page = c_page.text().split("/")[1]
-                    var match_flag = tmall_match(htmlElement,query_array[i],page)
-                    if(current > max_page || current == total_page){
-                        break
-                    }
-                    if (match_flag){
-                        break
-                    }
-                }
-            }
-        }
-    }
     
     
     
@@ -175,6 +135,7 @@
 //        var url = "https://list.tmall.com/search_product.htm?s="+(page*60)+"&q="+keyword+"&sort=s&style=g&smAreaId=320500&type=pc#J_Filter"
 //        return url
 //    }
+
     //服务器端转发
     function transmitRequest(url) {
         var html = ""
@@ -191,36 +152,9 @@
                 console.log(textStatus)
             }
         })
-        a = 1;
         return html
     }
     
-
-    var rdata = null
-    //获取result
-    function getResult() {
-        $.ajax({
-            url: "/getresult/",
-            type: 'POST',
-            data:{token:token, ids:query_product_ids},
-            async:false,
-            dataType: "json",
-            success: function (data,textStatus,jqXHR) {
-                console.log(data)
-                rdata = data
-            },
-            error:function (xhr,textStatus) {
-                console.log(xhr)
-                console.log(textStatus)
-            }
-
-        })
-    }
-    function extract_data(data) {
-        for(var i=0;i<data.length;i++){
-            result_area.value += data[i].keyword+","+data[i].p_id+","+data[i].title+","+data[i].shop+","+data[i].rank+"\r\n"
-        }
-    }
     
 </script>
 </html>
