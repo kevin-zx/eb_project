@@ -29,8 +29,10 @@
           height: 300px;
           box-sizing: border-box;
       }
+
   </style>
   <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+
 </head>
 
 <body>
@@ -55,6 +57,10 @@
       <textarea id="result_area" placeholder="结果"></textarea>
   </div>
 </body>
+
+{{range .js}}
+<script src="/static/js/{{.}}"></script>
+{{end}}
 <script>
     //获取要用的元素
     var query_box = document.querySelector("#keyword_area")
@@ -72,69 +78,16 @@
        if(query_arry.length >= 1 && query_arry[0]!=""){
         query_keywords  = query_box.value
         query_product_ids = id_box.value
+           result_area.value = ""
       }else{
           alert("请填写你要查询的排名")
           return
       }
 
-//      var platform = platform_select.value
-//      switch (platform){
-//          case "tmall":
-//            query_tmall_rank()
-//            break;
-//      }
-
+      var platform = platform_select.value
+      query(platform)
     }
 
-    
-    
-    
-//    function tmall_match(htmlElement, keyword, current_page) {
-//        var match_flag = false
-//        ids = id_box.value.split(/\r\n|\r|\n/g)
-//        if(ids.length>=1&& ids[0]!=""){
-//            for (var index = 0;index<ids.length; index++ ){
-//                var data = htmlElement.find("div[data-id='"+ids[index]+"']")
-//                if(data.length>0){
-//                    var data = extract_tmall_item(data[0])
-//                    if(data)
-//                        result_area.value += keyword+","+data.id+","+data.title+","+data.shop_name+","+(parseInt(data["rank"])+current_page*60)+"\r\n"
-//                    match_flag = true
-//                }
-//            }
-//        }else{
-//            var item_list = htmlElement.find("#J_ItemList > div")
-//            for(var i=0; i<item_list.length; i++){
-//                var il = item_list[i]
-//                var data = extract_tmall_item(il)
-//                if(data)
-//                    result_area.value += keyword+","+data.id+","+data.title+","+data.shop_name+","+(parseInt(data["rank"])+current_page*60)+"\r\n"
-//
-//            }
-//            match_flag = true
-//        }
-//        return match_flag
-//    }
-//
-//    function extract_tmall_item(tmall_item) {
-//        var data = {}
-//        if(!tmall_item.querySelector(".productTitle>a")){
-//            return null
-//        }
-//        data["id"] = tmall_item.getAttribute("data-id")
-//        data["title"] = tmall_item.querySelector(".productTitle>a").getAttribute("title")
-//        data["shop_name"] = tmall_item.querySelector(".productShop >a").text.trim()
-//        data["rank"] = tmall_item.querySelector(".productTitle>a").getAttribute("data-p").split("-")[0]
-//        return data
-//    }
-//    function htmlencode(html) {
-//        return $(html)
-//    }
-//
-//    function combine_tmall_pc_url(page,keyword) {
-//        var url = "https://list.tmall.com/search_product.htm?s="+(page*60)+"&q="+keyword+"&sort=s&style=g&smAreaId=320500&type=pc#J_Filter"
-//        return url
-//    }
 
     //服务器端转发
     function transmitRequest(url) {
@@ -154,7 +107,7 @@
         })
         return html
     }
-    
+
     
 </script>
 </html>

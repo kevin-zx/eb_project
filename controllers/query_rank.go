@@ -10,6 +10,6 @@ type QueryRankController struct {
 
 func (c *QueryRankController) Get() {
 	c.Data["PlatForm"] = []string{"tmall","taobao","jd"}
-	c.Data["Email"] = "astaxie@gmail.com"
+	c.Data["js"] = []string{"rank.js"}
 	c.TplName = "query_rank.tpl"
 }
