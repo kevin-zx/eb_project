@@ -68,6 +68,7 @@
     var result_area = document.querySelector("#result_area")
     //提交按钮点击事件的处理
     submit.onclick = function () {
+        result_area.value = ""
         var query_arry = query_box.value.split(/\r\n|\r|\n/g)
        if(query_arry.length >= 1 && query_arry[0]!=""){
         query_keywords  = query_box.value
@@ -77,13 +78,6 @@
           return
       }
 
-//      var platform = platform_select.value
-//      switch (platform){
-//          case "tmall":
-//            query_tmall_rank()
-//            break;
-//      }
-
       $.ajax({
               url: "/query/",
               type:'POST',
@@ -91,6 +85,7 @@
               success: function(data,textStatus,jqXHR){
                   console.log(data)
                   token = data
+                  getResult()
               },
               error:function (xhr,textStatus) {
                   console.log(xhr)
@@ -100,122 +95,42 @@
       )
     }
 
-    function query_tmall_rank() {
-        var query_array = query_box.value.split(/\r\n|\r|\n/g)
-        var max_page = max_page_input.value == 0 ? 3 : max_page_input.value
-        max_page = max_page>10 ? 10 : max_page
-        for (var i=0; i< query_array.length; i++){
-            for (var page = 0; page< max_page; page++){
-                var url = combine_tmall_pc_url(page, encodeURI(query_array[i]))
-                var html = transmitRequest(url)
-                var htmlElement = $(html)
-                var c_page = htmlElement.find("b.ui-page-s-len")
-                if(c_page.length == 0){
-                    tmall_match(htmlElement, keyword, page)
-                }else{
-                    var current = c_page.text().split("/")[0]
-                    var total_page = c_page.text().split("/")[1]
-                    var match_flag = tmall_match(htmlElement,query_array[i],page)
-                    if(current > max_page || current == total_page){
-                        break
-                    }
-                    if (match_flag){
-                        break
-                    }
-                }
-            }
-        }
-    }
-    
-    
-    
-//    function tmall_match(htmlElement, keyword, current_page) {
-//        var match_flag = false
-//        ids = id_box.value.split(/\r\n|\r|\n/g)
-//        if(ids.length>=1&& ids[0]!=""){
-//            for (var index = 0;index<ids.length; index++ ){
-//                var data = htmlElement.find("div[data-id='"+ids[index]+"']")
-//                if(data.length>0){
-//                    var data = extract_tmall_item(data[0])
-//                    if(data)
-//                        result_area.value += keyword+","+data.id+","+data.title+","+data.shop_name+","+(parseInt(data["rank"])+current_page*60)+"\r\n"
-//                    match_flag = true
-//                }
-//            }
-//        }else{
-//            var item_list = htmlElement.find("#J_ItemList > div")
-//            for(var i=0; i<item_list.length; i++){
-//                var il = item_list[i]
-//                var data = extract_tmall_item(il)
-//                if(data)
-//                    result_area.value += keyword+","+data.id+","+data.title+","+data.shop_name+","+(parseInt(data["rank"])+current_page*60)+"\r\n"
-//
-//            }
-//            match_flag = true
-//        }
-//        return match_flag
-//    }
-//
-//    function extract_tmall_item(tmall_item) {
-//        var data = {}
-//        if(!tmall_item.querySelector(".productTitle>a")){
-//            return null
-//        }
-//        data["id"] = tmall_item.getAttribute("data-id")
-//        data["title"] = tmall_item.querySelector(".productTitle>a").getAttribute("title")
-//        data["shop_name"] = tmall_item.querySelector(".productShop >a").text.trim()
-//        data["rank"] = tmall_item.querySelector(".productTitle>a").getAttribute("data-p").split("-")[0]
-//        return data
-//    }
-//    function htmlencode(html) {
-//        return $(html)
-//    }
-//
-//    function combine_tmall_pc_url(page,keyword) {
-//        var url = "https://list.tmall.com/search_product.htm?s="+(page*60)+"&q="+keyword+"&sort=s&style=g&smAreaId=320500&type=pc#J_Filter"
-//        return url
-//    }
-    //服务器端转发
-    function transmitRequest(url) {
-        var html = ""
-        $.ajax({
-            url:"/httptransmit/",
-            type:'POST',
-            async:false,
-            data:{url:url,encoding:"GBK"},
-            success: function (data,textStatus,jqXHR) {
-                html = data
-            },
-            error:function (xhr,textStatus) {
-                console.log(xhr)
-                console.log(textStatus)
-            }
-        })
-        return html
-    }
-    
-
-    var rdata = null
     //获取result
     function getResult() {
-        $.ajax({
-            url: "/getresult/",
-            type: 'POST',
-            data:{token:token, ids:query_product_ids},
-            async:false,
-            dataType: "json",
-            success: function (data,textStatus,jqXHR) {
-                console.log(data)
-                rdata = data
-            },
-            error:function (xhr,textStatus) {
-                console.log(xhr)
-                console.log(textStatus)
+        var rdata = null
+        result_area.value = "正在查询"
+        var intval = setInterval(function () {
+            if (rdata!= null){
+                console.log("停止")
+                extract_data(rdata)
+                clearInterval(intval)
             }
+            $.ajax({
+                url: "/getresult/",
+                type: 'POST',
+                data:{token:token, ids:query_product_ids,plateform:platform_select.value},
+                async:false,
+                dataType: "json",
+                success: function (data,textStatus,jqXHR) {
+//                    console.log(data)
+                    if(data.status == 0){
+                        result_area.value += "."
+                    }else{
+                        rdata = data
+                        extract_data(data)
+                    }
 
-        })
+                },
+                error:function (xhr,textStatus) {
+                    console.log(xhr)
+                    console.log(textStatus)
+                }
+            })
+        },1000);
     }
+
     function extract_data(data) {
+        result_area.value = ""
         for(var i=0;i<data.length;i++){
             result_area.value += data[i].keyword+","+data[i].p_id+","+data[i].title+","+data[i].shop+","+data[i].rank+"\r\n"
         }

@@ -12,6 +12,7 @@ type GetResultController struct {
 func (this *GetResultController) Post()  {
 	token := this.GetString("token")
 	ids := this.GetString("ids")
-	jsonData := models.GetResult(token, ids)
+	plateform := this.GetString("plateform")
+	jsonData := models.GetResult(token, ids, plateform)
 	this.Ctx.WriteString(jsonData)
 }

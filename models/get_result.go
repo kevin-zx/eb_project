@@ -7,17 +7,23 @@ import (
 	"encoding/json"
 )
 
-func GetResult(token string, ids string)string{
+func GetResult(token string, ids string, platform string)string{
 	if is_query_done(token){
-		return get_query_data(token, ids)
+		return get_query_data(token, ids,platform)
 	}else{
-		return `{"message":"还没查好"}`
+		return `{"message":"还没查好","status":0}`
 	}
 
 }
 //获取查排名的结果
-func get_query_data(token string, ids string) string {
-	sql := "select keyword,p_id,title,shop,rank from tmall_view where `batch` = ?"
+func get_query_data(token string, ids string, platform string) string {
+	sql :=""
+	if strings.Contains(platform ,"tmall"){
+		sql = "select keyword,p_id,title,shop,rank from tmall_view where `batch` = ?"
+	}else if strings.Contains(platform ,"taobao"){
+		sql = "select keyword,p_id,title,shop,rank from taobao_view where `batch` = ?"
+	}
+
 	id_array := regexpUtil.SplitString2Line(ids)
 	add := 1
 	if len(id_array)<=1 && id_array[0]==""{
@@ -37,9 +43,12 @@ func get_query_data(token string, ids string) string {
 	}
 	//println(token+"1234")
 
-	data,_ :=  mysqlutil.SelectAll(sql,param...)
-	println(data)
+	data,_ :=  mysqlutil.SelectAll(sql+" order by rank",param...)
+	println(sql)
+	//println(data)
+
 	json_data,_:=json.Marshal(data)
+	//println(json_data)
 	return string(json_data)
 }
 
