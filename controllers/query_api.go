@@ -16,3 +16,10 @@ func (this *QueryApiController) Post()  {
 	token := models.QueryRank(query_info,platform)
 	this.Ctx.WriteString(token)
 }
+
+func (this *QueryApiController) Get(){
+	query_info := this.GetString("queryinfo")
+	platform := this.GetString("platform")
+	token := models.QueryRank(query_info, platform)
+	this.Ctx.WriteString(token)
+}

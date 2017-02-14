@@ -7,23 +7,34 @@ import (
 	"encoding/json"
 )
 
-func GetResult(token string, ids string, platform string)string{
+func GetResult(token string, ids string, platform string,data_area string)string{
 	if is_query_done(token){
-		return get_query_data(token, ids,platform)
+		return get_query_data(token, ids, platform,data_area)
 	}else{
 		return `{"message":"还没查好","status":0}`
 	}
 
 }
 //获取查排名的结果
-func get_query_data(token string, ids string, platform string) string {
+//data_area full"全部数据" 为空或则stand默认keyword,p_id,title,shop,rank
+func get_query_data(token string, ids string, platform string,data_area string) string {
+
 	sql :=""
-	if strings.Contains(platform ,"tmall"){
-		sql = "select keyword,p_id,title,shop,rank from tmall_view where `batch` = ?"
-	}else if strings.Contains(platform ,"taobao"){
-		sql = "select keyword,p_id,title,shop,rank from taobao_view where `batch` = ?"
+	stand_data := "keyword,p_id,title,shop,rank"
+
+	println(data_area)
+	if data_area == "full" {
+		stand_data= "*"
+	}else if data_area == "stand"{
+	}else{
 	}
 
+	if strings.Contains(platform ,"tmall"){
+		sql = "select "+ stand_data +" from tmall_view where `batch` = ?"
+	}else if strings.Contains(platform ,"taobao"){
+		sql = "select "+ stand_data +" from taobao_view where `batch` = ?"
+	}
+	//println(sql)
 	id_array := regexpUtil.SplitString2Line(ids)
 	add := 1
 	if len(id_array)<=1 && id_array[0]==""{
@@ -41,14 +52,10 @@ func get_query_data(token string, ids string, platform string) string {
 		}
 		sql += strings.Join(question_mark_array, ",")+")"
 	}
-	//println(token+"1234")
 
 	data,_ :=  mysqlutil.SelectAll(sql+" order by rank",param...)
-	println(sql)
-	//println(data)
 
 	json_data,_:=json.Marshal(data)
-	//println(json_data)
 	return string(json_data)
 }
 
