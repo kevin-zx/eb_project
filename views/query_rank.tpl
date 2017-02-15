@@ -78,7 +78,7 @@
        if(query_arry.length >= 1 && query_arry[0]!=""){
         query_keywords  = query_box.value
         query_product_ids = id_box.value
-           result_area.value = ""
+        result_area.value = ""
       }else{
           alert("请填写你要查询的排名")
           return
