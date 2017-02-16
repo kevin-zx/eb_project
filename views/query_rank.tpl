@@ -94,10 +94,10 @@
           }
       )
     }
-
+    var rdata = null
     //获取result
     function getResult() {
-        var rdata = null
+//        var rdata = null
         result_area.value = "正在查询"
         var intval = setInterval(function () {
             if (rdata!= null){
@@ -108,11 +108,10 @@
             $.ajax({
                 url: "/getresult/",
                 type: 'POST',
-                data:{token:token, ids:query_product_ids,plateform:platform_select.value},
+                data:{token:token, ids:query_product_ids,plateform:platform_select.value,data_area:"full"},
                 async:false,
                 dataType: "json",
                 success: function (data,textStatus,jqXHR) {
-//                    console.log(data)
                     if(data.status == 0){
                         result_area.value += "."
                     }else{
@@ -132,7 +131,7 @@
     function extract_data(data) {
         result_area.value = ""
         for(var i=0;i<data.length;i++){
-            result_area.value += data[i].keyword+","+data[i].p_id+","+data[i].title+","+data[i].shop+","+data[i].rank+"\r\n"
+            result_area.value += data[i].keyword+","+data[i].p_id+","+data[i].title+","+data[i].shop+","+data[i].v_price+","+data[i].v_monthly_sales+","+data[i].v_comment_count+","+data[i].rank+"\r\n"
         }
     }
     
