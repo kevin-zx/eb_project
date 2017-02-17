@@ -3,7 +3,6 @@ package routers
 import (
 	"eb_project/controllers"
 	"github.com/astaxie/beego"
-
 )
 
 func init() {
