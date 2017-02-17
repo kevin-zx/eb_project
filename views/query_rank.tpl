@@ -29,6 +29,10 @@
           height: 300px;
           box-sizing: border-box;
       }
+      #submit{
+          width: 60px;
+          height: 30px;
+      }
   </style>
   <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
 </head>
@@ -68,6 +72,8 @@
     var result_area = document.querySelector("#result_area")
     //提交按钮点击事件的处理
     submit.onclick = function () {
+        submit.setAttribute("disabled","disabled")
+        submit.innerText = "正在查询"
         result_area.value = ""
         var query_arry = query_box.value.split(/\r\n|\r|\n/g)
        if(query_arry.length >= 1 && query_arry[0]!=""){
@@ -94,10 +100,10 @@
           }
       )
     }
-    var rdata = null
+//    var rdata = null
     //获取result
     function getResult() {
-//        var rdata = null
+        var rdata = null
         result_area.value = "正在查询"
         var intval = setInterval(function () {
             if (rdata!= null){
@@ -133,6 +139,8 @@
         for(var i=0;i<data.length;i++){
             result_area.value += data[i].keyword+","+data[i].p_id+","+data[i].title+","+data[i].shop+","+data[i].v_price+","+data[i].v_monthly_sales+","+data[i].v_comment_count+","+data[i].rank+"\r\n"
         }
+        submit.removeAttribute("disabled")
+        submit.innerText = "提交"
     }
     
 </script>
