@@ -37,7 +37,7 @@ func get_query_data(token string, ids string) string {
 	}
 	//println(token+"1234")
 
-	data,_ :=  mysqlutil.SelectAll(sql,param...)
+	data,_ :=  mysqlutil.GlobalMysqlUtil.SelectAll(sql,param...)
 	println(data)
 	json_data,_:=json.Marshal(data)
 	return string(json_data)
@@ -47,7 +47,7 @@ func get_query_data(token string, ids string) string {
 func is_query_done(token string)  (bool){
 	flag := false
 	//查看任务库中是否含有
-	c,_ := mysqlutil.SelectAll("select 1 from spider_keyword where `batch` = ? and `status` = 1 limit 1", token)
+	c,_ := mysqlutil.GlobalMysqlUtil.SelectAll("select 1 from spider_keyword where `batch` = ? and `status` = 1 limit 1", token)
 	//这里没有结果有可能是token不对
 	if len(*c)==0{
 		flag = true

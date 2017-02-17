@@ -14,10 +14,10 @@ func (this *HttpTransmitController)  Post(){
 	url := this.GetString("url")
 	webcon,err := httpUtil.GetWebConFromUrl(url)
 	encoding := this.GetString("encoding")
-	println(url)
+
 	enc := mahonia.NewDecoder(encoding)
 	if err != nil {
-		println(err)
+		println(err.Error())
 		this.Ctx.WriteString(`{"message":"request_erro","status":"0"}`)
 	}else {
 		this.Ctx.WriteString(enc.ConvertString(webcon))
