@@ -110,7 +110,9 @@ function extract_tmall_item(tmall_item) {
     data["id"] = tmall_item.getAttribute("data-id")
     data["title"] = tmall_item.querySelector(".productTitle>a").getAttribute("title")
     data["shop_name"] = tmall_item.querySelector(".productShop >a").text.trim()
-    data["shop_name"] = tmall_item.querySelector(".productStatus > span>em").text.trim().replace("笔 ","").replace("")
+    if(tmall_item.querySelector(".productStatus > span>em").text){
+        data["shop_name"] = tmall_item.querySelector(".productStatus > span>em").text.trim().replace("笔 ","").replace("")
+    }
     data["rank"] = tmall_item.querySelector(".productTitle>a").getAttribute("data-p").split("-")[0]
     return data
 }
